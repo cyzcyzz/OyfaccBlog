@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="TCP连接总结 最近一些时间线上的服务器会报TcpListenDrop和TcpOverFlowed的警告，一开始是不知道这究竟什么含义,然后开始研究tcp队列的相关含义，下面进行一些总结。 TCP三次握手，四次分手是大家耳熟能详的过程，甚至多数人都能说明“为什么三次握手和四次握手”，但是当我们真正去实际的解决问题的时候，我们往往不能将这些理论和实际结合起来，我相信大多数的技术人员甚至不能说明整个连接过程的11种状态，这也就是为什么我们不能实际的解决问题，因为状态的变化，可以为我们提供非常多的有效信息，下面一张图搞定这些状态的变化和出现的终端。 这张图很清晰展现了tcp从建立连接到数据传输完成断开连接的整个状态的变化，这里对每个状态简要的进行说明下： 服务端 这里一般是指被动接受的一方，不一定非得是服务器的一端； LISTEN:这个状态是服务端最开始状态，此时等待客户端进行连接； SYN_RCVD:这个状态是等待客户端进行确认的状态，此时客户端发来确认位，即可建立连接； ESTABLISHED: 著名的连接建立状态； CLOSE_WAIT:客户端主动发起分手，服务端收到请求，并且确认后的状态； LAST_ACK:服务端发起最后一次分手后的状态，此时等待客户端确认; CLOSE:关闭状态，客户端回复最后一次分手后的状态； 客户端 这里一般是指主动发起连接的一方，不一定是终端用户； CLOSED:被动关闭状态，此时可以调connect方法连接服务端； SYN_SEND:发送完连接后的状态,此时等待服务端回复； FIN_WAIT1:主动调用close方法后的状态，此时发送了一个fin信号； FIN_WAIT2: 收到服务端对第一次发起fin状态的回复后的状态，此时等待服务端调用close方法，发起最后一次fin； TIME_WAIT:此时服务端主动发送了最后一次FIN,客户端接收后，恢复了确认位，进入这个状态，等待最后的超市关闭,下面一段记录了几个内核参数，用于调整TCP的一些状态； net.ipv4.tcp_syncookies = 1 表示开启SYN Cookies。当出现SYN等待队列溢出时，启用cookies来处理，可防范少量SYN攻击，默认为0，表示关闭； net.ipv4.tcp_tw_reuse = 1 表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭； net.ipv4.tcp_tw_recycle = 1 表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭。 net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间 ">
+<title>TCP问题</title>
+
+<link rel='canonical' href='http://localhost:1313/linux/tcp%E9%93%BE%E6%8E%A5/'>
+
+<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="TCP问题">
+<meta property='og:description' content="TCP连接总结 最近一些时间线上的服务器会报TcpListenDrop和TcpOverFlowed的警告，一开始是不知道这究竟什么含义,然后开始研究tcp队列的相关含义，下面进行一些总结。 TCP三次握手，四次分手是大家耳熟能详的过程，甚至多数人都能说明“为什么三次握手和四次握手”，但是当我们真正去实际的解决问题的时候，我们往往不能将这些理论和实际结合起来，我相信大多数的技术人员甚至不能说明整个连接过程的11种状态，这也就是为什么我们不能实际的解决问题，因为状态的变化，可以为我们提供非常多的有效信息，下面一张图搞定这些状态的变化和出现的终端。 这张图很清晰展现了tcp从建立连接到数据传输完成断开连接的整个状态的变化，这里对每个状态简要的进行说明下： 服务端 这里一般是指被动接受的一方，不一定非得是服务器的一端； LISTEN:这个状态是服务端最开始状态，此时等待客户端进行连接； SYN_RCVD:这个状态是等待客户端进行确认的状态，此时客户端发来确认位，即可建立连接； ESTABLISHED: 著名的连接建立状态； CLOSE_WAIT:客户端主动发起分手，服务端收到请求，并且确认后的状态； LAST_ACK:服务端发起最后一次分手后的状态，此时等待客户端确认; CLOSE:关闭状态，客户端回复最后一次分手后的状态； 客户端 这里一般是指主动发起连接的一方，不一定是终端用户； CLOSED:被动关闭状态，此时可以调connect方法连接服务端； SYN_SEND:发送完连接后的状态,此时等待服务端回复； FIN_WAIT1:主动调用close方法后的状态，此时发送了一个fin信号； FIN_WAIT2: 收到服务端对第一次发起fin状态的回复后的状态，此时等待服务端调用close方法，发起最后一次fin； TIME_WAIT:此时服务端主动发送了最后一次FIN,客户端接收后，恢复了确认位，进入这个状态，等待最后的超市关闭,下面一段记录了几个内核参数，用于调整TCP的一些状态； net.ipv4.tcp_syncookies = 1 表示开启SYN Cookies。当出现SYN等待队列溢出时，启用cookies来处理，可防范少量SYN攻击，默认为0，表示关闭； net.ipv4.tcp_tw_reuse = 1 表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭； net.ipv4.tcp_tw_recycle = 1 表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭。 net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间 ">
+<meta property='og:url' content='http://localhost:1313/linux/tcp%E9%93%BE%E6%8E%A5/'>
+<meta property='og:site_name' content='千兆光年'>
+<meta property='og:type' content='article'><meta property='article:section' content='Linux' /><meta property='article:published_time' content='2020-03-06T23:03:27&#43;08:00'/><meta property='article:modified_time' content='2020-03-06T23:03:27&#43;08:00'/>
+<meta name="twitter:title" content="TCP问题">
+<meta name="twitter:description" content="TCP连接总结 最近一些时间线上的服务器会报TcpListenDrop和TcpOverFlowed的警告，一开始是不知道这究竟什么含义,然后开始研究tcp队列的相关含义，下面进行一些总结。 TCP三次握手，四次分手是大家耳熟能详的过程，甚至多数人都能说明“为什么三次握手和四次握手”，但是当我们真正去实际的解决问题的时候，我们往往不能将这些理论和实际结合起来，我相信大多数的技术人员甚至不能说明整个连接过程的11种状态，这也就是为什么我们不能实际的解决问题，因为状态的变化，可以为我们提供非常多的有效信息，下面一张图搞定这些状态的变化和出现的终端。 这张图很清晰展现了tcp从建立连接到数据传输完成断开连接的整个状态的变化，这里对每个状态简要的进行说明下： 服务端 这里一般是指被动接受的一方，不一定非得是服务器的一端； LISTEN:这个状态是服务端最开始状态，此时等待客户端进行连接； SYN_RCVD:这个状态是等待客户端进行确认的状态，此时客户端发来确认位，即可建立连接； ESTABLISHED: 著名的连接建立状态； CLOSE_WAIT:客户端主动发起分手，服务端收到请求，并且确认后的状态； LAST_ACK:服务端发起最后一次分手后的状态，此时等待客户端确认; CLOSE:关闭状态，客户端回复最后一次分手后的状态； 客户端 这里一般是指主动发起连接的一方，不一定是终端用户； CLOSED:被动关闭状态，此时可以调connect方法连接服务端； SYN_SEND:发送完连接后的状态,此时等待服务端回复； FIN_WAIT1:主动调用close方法后的状态，此时发送了一个fin信号； FIN_WAIT2: 收到服务端对第一次发起fin状态的回复后的状态，此时等待服务端调用close方法，发起最后一次fin； TIME_WAIT:此时服务端主动发送了最后一次FIN,客户端接收后，恢复了确认位，进入这个状态，等待最后的超市关闭,下面一段记录了几个内核参数，用于调整TCP的一些状态； net.ipv4.tcp_syncookies = 1 表示开启SYN Cookies。当出现SYN等待队列溢出时，启用cookies来处理，可防范少量SYN攻击，默认为0，表示关闭； net.ipv4.tcp_tw_reuse = 1 表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭； net.ipv4.tcp_tw_recycle = 1 表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭。 net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间 ">
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column compact"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_huda2458f72ce188392d75c5d51cd8e24e_373_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">千兆光年</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/network/" >
+                Network
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/linux/tcp%E9%93%BE%E6%8E%A5/">TCP问题</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Mar 06, 2020</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="tcp连接总结">TCP连接总结
+</h1><p>  最近一些时间线上的服务器会报TcpListenDrop和TcpOverFlowed的警告，一开始是不知道这究竟什么含义,然后开始研究tcp队列的相关含义，下面进行一些总结。
+  TCP三次握手，四次分手是大家耳熟能详的过程，甚至多数人都能说明“为什么三次握手和四次握手”，但是当我们真正去实际的解决问题的时候，我们往往不能将这些理论和实际结合起来，我相信大多数的技术人员甚至不能说明整个连接过程的11种状态，这也就是为什么我们不能实际的解决问题，因为状态的变化，可以为我们提供非常多的有效信息，下面一张图搞定这些状态的变化和出现的终端。
+<img src="http://cdn.oyfacc.cn/network/tcp-3link.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="net-one"
+	
+	
+>
+这张图很清晰展现了tcp从建立连接到数据传输完成断开连接的整个状态的变化，这里对每个状态简要的进行说明下：</p>
+<h4 id="服务端">服务端
+</h4><p> 这里一般是指被动接受的一方，不一定非得是服务器的一端；
+ <code>LISTEN</code>:这个状态是服务端最开始状态，此时等待客户端进行连接；
+ <code>SYN_RCVD</code>:这个状态是等待客户端进行确认的状态，此时客户端发来确认位，即可建立连接；
+ <code>ESTABLISHED</code>: 著名的连接建立状态；
+ <code>CLOSE_WAIT</code>:客户端主动发起分手，服务端收到请求，并且确认后的状态；
+ <code>LAST_ACK</code>:服务端发起最后一次分手后的状态，此时等待客户端确认;
+ <code>CLOSE</code>:关闭状态，客户端回复最后一次分手后的状态；</p>
+<h4 id="客户端">客户端
+</h4><p> 这里一般是指主动发起连接的一方，不一定是终端用户；
+ <code>CLOSED</code>:被动关闭状态，此时可以调connect方法连接服务端；
+ <code>SYN_SEND</code>:发送完连接后的状态,此时等待服务端回复；
+ <code>FIN_WAIT1</code>:主动调用close方法后的状态，此时发送了一个fin信号；
+ <code>FIN_WAIT2</code>: 收到服务端对第一次发起fin状态的回复后的状态，此时等待服务端调用close方法，发起最后一次fin；
+ <code>TIME_WAIT</code>:此时服务端主动发送了最后一次FIN,客户端接收后，恢复了确认位，进入这个状态，等待最后的超市关闭,下面一段记录了几个内核参数，用于调整TCP的一些状态；</p>
+<pre tabindex="0"><code class="language-linux" data-lang="linux">net.ipv4.tcp_syncookies = 1 表示开启SYN Cookies。当出现SYN等待队列溢出时，启用cookies来处理，可防范少量SYN攻击，默认为0，表示关闭；
+net.ipv4.tcp_tw_reuse = 1 表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭；
+net.ipv4.tcp_tw_recycle = 1 表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭。
+net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间
+</code></pre>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2024 千兆光年
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

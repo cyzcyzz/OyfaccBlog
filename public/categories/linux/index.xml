@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Linux on 千兆光年&#39;s Blog</title>
+        <link>http://localhost:1313/categories/linux/</link>
+        <description>Recent content in Linux on 千兆光年&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>OyFaCC</copyright>
+        <lastBuildDate>Sat, 06 Jun 2020 12:09:40 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/linux/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Linux基础入门(3)</title>
+        <link>http://localhost:1313/p/linux%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A83/</link>
+        <pubDate>Sat, 06 Jun 2020 12:09:40 +0800</pubDate>
+        
+        <guid>http://localhost:1313/p/linux%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A83/</guid>
+        <description>&lt;h1 id=&#34;命令简介&#34;&gt;命令简介
+&lt;/h1&gt;&lt;p&gt;通常在命令行执行的操作，我们称之为命令。linux中，命令分为两种类型，内部命令和外部命令。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;内部命令：随着bash加载近内存的命令&lt;/li&gt;
+&lt;li&gt;外部命令：后来安装的命令或者存储在磁盘上的命令&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;那外部命令是怎么被查找到的呢？其实是因为系统中存在PATH的环境变量，bash会按照PATH路径来查找命令。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# echo $PATH&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/root/.pyenv/bin:/home/jdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/usr/local/bin/:/root/bin 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 可以看到PATH变量其实存储的是以冒号分割的一个个路径，查找的过程中是按照顺序依次查找，第一个查找到的生效&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如何查看一个命令的类型？可以使用type命令查看&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# type cd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; is a shell &lt;span class=&#34;nb&#34;&gt;builtin&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# type python&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;python is /usr/bin/python
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 这里可以很清晰的看到内建命令直接显示的是内建，外部显示的是他的安装路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;内部命令查看帮助手册&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# help cd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;cd: &lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;-L&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;-P &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;-e&lt;span class=&#34;o&#34;&gt;]]]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;dir&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    Change the shell working directory.
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    Change the current directory to DIR.  The default DIR is the value of the
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    HOME shell variable.
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;列出全部的内建命令&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# enable&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;enable&lt;/span&gt; .
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;enable&lt;/span&gt; :
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;enable&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;alias&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;enable&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;enable&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;hash&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;enable&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;help&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;enable&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;history&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;enable&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;kill&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;... &lt;span class=&#34;c1&#34;&gt;# 这里仅展示了一部分，&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;但其实有部分命令是内建命令但同时也存在一个外部命令，为了防止内建被禁用时的使用。如：echo&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# type echo&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; is a shell &lt;span class=&#34;nb&#34;&gt;builtin&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 非常清晰的看到时内建命令&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# enable -n echo # 这里禁用了echo命令&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# type echo&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; is /usr/bin/echo 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 此时echo成为了一个外部命令&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;通常我们要查找一个命令的详细路径，一般有两个命令&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;which&lt;/li&gt;
+&lt;li&gt;whereis&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这两个命令的区别就是whereis本身会显示更详细的信息&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# which python&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/usr/bin/python
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# whereis python&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;python: /usr/bin/python3.6m /usr/bin/python2.7 /usr/bin/python /usr/bin/python2.7-config /usr/bin/python3.6 /usr/lib/python2.6 /usr/lib/python2.7 /usr/lib/python3.6 /usr/lib64/python2.7 /usr/lib64/python3.6 /etc/python /usr/local/bin/python3.7m-config /usr/local/bin/python3.7-config /usr/local/bin/python3.7m /usr/local/bin/python3.7 /usr/include/python3.6m /usr/include/python2.7 /usr/share/man/man1/python.1.gz
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这里存在一个问题，我们每次要使用一个外部命令的时候，都要查找一遍PATH吗？其实试试不需要的，当第一次找到的时候，这个命令的路径就会被存储在内存中，通常我们称之为hashed&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# hash&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;hits    &lt;span class=&#34;nb&#34;&gt;command&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;    /usr/bin/whereis
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   左侧时命中次数 ，右侧显示的是命令的绝对路径
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# hash -d python # 删除python命令的hash&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# hash -r # 清除全部的hash&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;每次退出终端后hash会全部清空&lt;/p&gt;
+&lt;p&gt;命令本身可以定义别名&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# alias h=hostname #定义一个别名h，命令为hostname&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# h&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ops
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# alias  # 列出全部的别名&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;alias&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;cp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;cp -i&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;alias&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;egrep&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;egrep --color=auto&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;alias&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;fgrep&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;fgrep --color=auto&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;alias&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;grep&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;grep --color=auto&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;alias&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;h&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;hostname&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;alias&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;k&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;kubectl&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;alias&lt;/span&gt; l.&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;ls -d .* --color=auto&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;alias&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;ll&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;ls -l --color=auto&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;alias&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;ls&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;ls --color=auto&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;alias&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;mv&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;mv -i&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;alias&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;rm&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;rm -i&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;alias&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;which&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;别名的优先级最高，大于内建命令，大于外部命令&lt;/p&gt;
+&lt;h1 id=&#34;时间和时区&#34;&gt;时间和时区
+&lt;/h1&gt;&lt;p&gt;常用命令总结&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# date # 显示当前机器的时间&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Sat Jun  &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt; 13:36:27 CST &lt;span class=&#34;m&#34;&gt;2020&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# date &amp;#34;+%F&amp;#34; # 格式化当前时间&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;2020-06-06 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# date -d &amp;#34;-10 days&amp;#34; &amp;#34;+%F&amp;#34; # 求十天前的日期&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;2020-05-27
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;硬件时间显示&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# hwclock &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Sat &lt;span class=&#34;m&#34;&gt;06&lt;/span&gt; Jun &lt;span class=&#34;m&#34;&gt;2020&lt;/span&gt; 01:39:46 PM CST  -0.037121 seconds
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# clock&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Sat &lt;span class=&#34;m&#34;&gt;06&lt;/span&gt; Jun &lt;span class=&#34;m&#34;&gt;2020&lt;/span&gt; 01:39:52 PM CST  -0.322863 seconds
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 上边的两个命令都用来显示硬件时间&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;时区的相关设置&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# timedatectl list-timezones&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Africa/Abidjan
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Africa/Accra
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Africa/Addis_Ababa
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Africa/Algiers
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;............ &lt;span class=&#34;c1&#34;&gt;# 列出全部的时区&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# timedatectl set-timezone Africa/Accra # 设置时区&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;日历的相关显示,在Linux中使用cal命令来显示日历&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# cal # 显示现在的日期 这里今天的日志在终端是加了底色的，因为复制出来所有没有了&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      June &lt;span class=&#34;m&#34;&gt;2020&lt;/span&gt;     
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Su Mo Tu We Th Fr Sa
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;5&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; &lt;span class=&#34;m&#34;&gt;7&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;9&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;10&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;11&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;12&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;13&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;14&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;15&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;16&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;17&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;18&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;19&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;20&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;21&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;22&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;23&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;24&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;25&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;26&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;27&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;28&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;29&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;30&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# cal 2020 # 显示2020年的全部月份&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                               &lt;span class=&#34;m&#34;&gt;2020&lt;/span&gt;                               
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;       January               February                 March       
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;          &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;                      &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;    &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;5&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;7&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; &lt;span class=&#34;m&#34;&gt;5&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;7&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;9&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;10&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;11&lt;/span&gt;    &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;3&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;5&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;7&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt;    &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt;  &lt;span class=&#34;m&#34;&gt;9&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;10&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;11&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;12&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;13&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;14&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;12&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;13&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;14&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;15&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;16&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;17&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;18&lt;/span&gt;    &lt;span class=&#34;m&#34;&gt;9&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;10&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;11&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;12&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;13&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;14&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;15&lt;/span&gt;   &lt;span class=&#34;m&#34;&gt;15&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;16&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;17&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;18&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;19&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;20&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;21&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;19&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;20&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;21&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;22&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;23&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;24&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;25&lt;/span&gt;   &lt;span class=&#34;m&#34;&gt;16&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;17&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;18&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;19&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;20&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;21&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;22&lt;/span&gt;   &lt;span class=&#34;m&#34;&gt;22&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;23&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;24&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;25&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;26&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;27&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;28&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;26&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;27&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;28&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;29&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;30&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;31&lt;/span&gt;      &lt;span class=&#34;m&#34;&gt;23&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;24&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;25&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;26&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;27&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;28&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;29&lt;/span&gt;   &lt;span class=&#34;m&#34;&gt;29&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;30&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;31&lt;/span&gt; 。。。。。。。
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+        </item>
+        <item>
+        <title>Linux基础入门(2)</title>
+        <link>http://localhost:1313/p/linux%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A82/</link>
+        <pubDate>Fri, 27 Mar 2020 22:29:06 +0800</pubDate>
+        
+        <guid>http://localhost:1313/p/linux%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A82/</guid>
+        <description>&lt;h3 id=&#34;概述&#34;&gt;概述
+&lt;/h3&gt;&lt;p&gt;熟悉windows系统的同学都知道，win系统本身是存在分区盘符的概念的，如：C盘一般是存放我们的系统文件。其实任何操作系统都是有文件系统的，这样才可以存放我们的文件，linux也不例外。但是Linux和windows组织的方式是不太一样的，在linux中第一个分区称之为根分区，采用符号“/”来表示，下面一张图可以看到基本的分区结构，这里的分区结构展示的MBR类型的分区,GPT另作讨论：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://cdn.oyfacc.cn/linux/linux-diskpart.jpg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;disk-part&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;在mbr类型的分区中，主分区+扩展分区=4个分区，而且扩展分区最多有一个，不直接存储数据，而是划分为逻辑分区后再存储数据，这里的分区主要是针对单个磁盘说的。MBR类型的分区最大支持的磁盘大小为2T，至于为什么，后面会详细讲述。其实生产环境中用到扩展分区真的很少，大多数都是一个硬盘上就存在一个分区。逻辑分区的号码一般是从5开始的。&lt;/p&gt;
+&lt;h5 id=&#34;lsblk命令-查看全部磁盘和磁盘的分区&#34;&gt;lsblk命令： 查看全部磁盘和磁盘的分区
+&lt;/h5&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# lsblk&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;vdb    253:16   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;  500G  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; disk 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;└─vdb1 253:17   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;  500G  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; part 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;vda    253:0    &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;  100G  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; disk 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;└─vda1 253:1    &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;  100G  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; part /
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;上篇文章有解析
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;linux用户&#34;&gt;Linux用户
+&lt;/h5&gt;&lt;p&gt;Linux的账户类型分为两类：1，管理账户。2，普通用户&lt;/p&gt;
+&lt;p&gt;管理账户用于管理操作系统，普通用户一般权限有限，只能做一些仅有的操作，像查看日志这些基本的功能&lt;/p&gt;
+&lt;p&gt;其中&lt;code&gt;root&lt;/code&gt;账户比较特别，是超级管理员，拥有全部的权限，危险性很高，轻易不要暴露&lt;/p&gt;
+&lt;p&gt;系统账号的ID，在centos6系统中，普通账户的ID从500开始，500之前是管理账户，centos7普通用户从1000开始，之前是管理账户，而root一般是0号账户&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# echo $UID&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;用于查看当前登陆账户的ID
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;终端&#34;&gt;终端
+&lt;/h5&gt;&lt;p&gt;终端是指我们当前操作的页面，这个页面可以是命令行，也可以是桌面。终端分为两种：1，物理终端，2，虚拟终端&lt;/p&gt;
+&lt;p&gt;物理终端：一般是说/dev/consol，也就是通常所说的连接机器的显示器和键盘&lt;/p&gt;
+&lt;p&gt;虚拟终端：一般指远程连接过来的终端,/de/pts/0&lt;/p&gt;
+&lt;p&gt;模拟终端：指和我们交互的命令行窗口，一般通过&lt;code&gt;ctrl+alt+F(1~6)&lt;/code&gt;切换模拟终端 /dev/tty&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;[root@ops ~]# tty
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/dev/pts/0
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;查看所有的终端
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;运行级别&#34;&gt;运行级别
+&lt;/h5&gt;&lt;p&gt;在linux中存在运行级别的概念&lt;/p&gt;
+&lt;p&gt;0级别：关机&lt;/p&gt;
+&lt;p&gt;1级别：单用户模式&lt;/p&gt;
+&lt;p&gt;3级别：命令行模式&lt;/p&gt;
+&lt;p&gt;5级别：桌面模式&lt;/p&gt;
+&lt;p&gt;6级别：重启&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# init (0 1 3 5 6)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;根据上述的解释分别的操作
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;shell&#34;&gt;shell
+&lt;/h5&gt;&lt;p&gt;linux中和人命令行交互的程序叫shell，也就是壳，他是命令解释器+高级语言，也就是说，shell是一种变成语言，也是一种交互方式。shell介于系统调用外部，和库函数同级别&lt;/p&gt;
+&lt;p&gt;shell既然是一种交互的方式，那就存在很多种实现，现在基本上最流行的是bash，在mac上比较流行zsh&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# echo $SHELL&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/bin/bash
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;查看当前使用的shell类型
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# cat /etc/shells &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/bin/sh
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/bin/bash
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/usr/bin/sh
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/usr/bin/bash
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;查看当前系统支持的shell类型
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;其实有一种特别的shell&lt;code&gt;/sbin/nologin&lt;/code&gt;可以看到是不可登陆shell，这种shell主要用于应用程序的运行，不需要交互的登陆终端，更安全。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# getent passwd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;root:x:0:0:root:/root:/bin/bash
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;bin:x:1:1:bin:/bin:/sbin/nologin
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;daemon:x:2:2:daemon:/sbin:/sbin/nologin
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;adm:x:3:4:adm:/var/adm:/sbin/nologin
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sync:x:5:0:sync:/sbin:/bin/sync
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;halt:x:7:0:halt:/sbin:/sbin/halt
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;。。。。。
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;获取全部的用户信息
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# getent passwd root&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;root:x:0:0:root:/root:/bin/bash
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;获取单个用户的详细信息
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;who显示用户&#34;&gt;who:显示用户
+&lt;/h5&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# who&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;root     pts/0        2020-03-27 23:01 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;10.10.20.40&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;用户    虚拟终端号    登陆时间          IP地址
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# who -b&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;         system boot  2019-08-13 14:28
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;         显示系统启动时间
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;whom-显示用户&#34;&gt;whom: 显示用户
+&lt;/h5&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# whoami&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;root
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;iconvwin系统文件转换linux格式不常用&#34;&gt;iconv:win系统文件转换linux格式，不常用
+&lt;/h5&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;iconv -f gb2312 file1 -o file2
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;其他的杂项&#34;&gt;其他的杂项
+&lt;/h5&gt;&lt;p&gt;想要修改登录后的提示信息可以修改&lt;code&gt;/etc/motd&lt;/code&gt;文件&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Linux基础入门(1)</title>
+        <link>http://localhost:1313/p/linux%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A81/</link>
+        <pubDate>Mon, 16 Mar 2020 23:33:11 +0800</pubDate>
+        
+        <guid>http://localhost:1313/p/linux%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A81/</guid>
+        <description>&lt;h2 id=&#34;概述&#34;&gt;概述
+&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;http://cdn.oyfacc.cn/linux/linux-one.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;one-one&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;  冯诺伊曼体系结构的计算机是现在计算机系统的基石。现代计算机系统，在整体上划分为硬件系统和软件系统。硬件系统又包括内部的硬件和外部的硬件。内部硬件主要包含CPU和内存，cpu就包含传统的控制器和运算器还有寄存器这些，内存分为RAM（随机存取存储器），ROM（只读存储器）。外部设备又包含硬盘存储，输入和输出设备等。而软件主要分为系统软件和应用软件。系统软件有操作系统，数据库系统这些。应用软件主要是通用软件和专用软件，如360杀毒是应用软件，如erp系统就属于专用软件。&lt;/p&gt;
+&lt;p&gt;操作系统是基石，也是最重要的系统软件，是和硬件交互的主要渠道，也是各类应用软件的载体。Linux操作系统是主流的操作系统，是开源领域软件的杰出代表，占据服务器的操作系统的大部分市场，可以说Linux系统是非常重要的。&lt;/p&gt;
+&lt;p&gt;通常所说的linux系统，主要指带Linux内核，根据开源软件协议，各发行商将工具融合和linux一起打包成便于操作的系统，这就是不同的linux发型版的由来。linux的发型版是非常多的，而主流的主要分为如下的几个：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;系统名称&lt;/th&gt;
+&lt;th&gt;代表1&lt;/th&gt;
+&lt;th&gt;代表2&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Fedora系&lt;/td&gt;
+&lt;td&gt;redhat&lt;/td&gt;
+&lt;td&gt;centos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;debian系&lt;/td&gt;
+&lt;td&gt;ubuntu&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;发型版系统= linux内核+GNU工具&lt;/p&gt;
+&lt;p&gt;计算机体系结构方面的知识可以参照上图，具体和详细的可以推荐参考《计算机组成原理》这本书，作者是唐朔飞，这是很多大学计算机专业课用书，专业度毋庸置疑。链接在这里&lt;a class=&#34;link&#34; href=&#34;https://item.jd.com/12271404.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;组成原理链接&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;命令总结&#34;&gt;命令总结
+&lt;/h3&gt;&lt;h5 id=&#34;lscpu命令查看当前机器的cpu信息&#34;&gt;lscpu命令：查看当前机器的cpu信息
+&lt;/h5&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# lscpu&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Architecture:          x86_64
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;CPU op-mode&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;s&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;:        32-bit, 64-bit
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Byte Order:            Little Endian
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;CPU&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;s&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;:                &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;On-line CPU&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;s&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; list:   0-3
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Thread&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;s&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; per core:    &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Core&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;s&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; per socket:    &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Socket&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;s&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;:             &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;NUMA node&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;s&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;:          &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Vendor ID:             GenuineIntel
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;CPU family:            &lt;span class=&#34;m&#34;&gt;6&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Model:                 &lt;span class=&#34;m&#34;&gt;85&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Model name:            Intel&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;R&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; Xeon&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;R&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; Gold &lt;span class=&#34;m&#34;&gt;6151&lt;/span&gt; CPU @ 3.00GHz
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Stepping:              &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;CPU MHz:               3000.000
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;BogoMIPS:              6000.00
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Hypervisor vendor:     KVM
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Virtualization type:   full
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;L1d cache:             32K
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;L1i cache:             32K
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;L2 cache:              1024K
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;L3 cache:              25344K
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;NUMA node0 CPU&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;s&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;:     0-3
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;file命令查看文件类型&#34;&gt;file命令：查看文件类型
+&lt;/h5&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# file alertmanager &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;alertmanager: ELF 64-bit LSB executable, x86-64, version &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;SYSV&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, statically linked, not stripped 可执行文件
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# file a.json &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;a.json: ASCII text 文本文件
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# file control.sh &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;control.sh: Bourne-Again shell script, ASCII text executable shell文件
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;hexdump命令查看二进制文件的内容&#34;&gt;hexdump命令：查看二进制文件的内容
+&lt;/h5&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops bin&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# hexdump -c -n 100 redis-cli    &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;0000000&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;177&lt;/span&gt;   E   L   F &lt;span class=&#34;m&#34;&gt;002&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;001&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;001&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;0000010&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;002&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;   &amp;gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;001&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;   &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;   e   @  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;0000020&lt;/span&gt;   @  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;   &lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;345&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\a&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;0000030&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;   @  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;   &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\t&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;   @  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;   &lt;span class=&#34;p&#34;&gt;&amp;amp;&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;   %  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;0000040&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;006&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;005&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;   @  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;0000050&lt;/span&gt;   @  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;   @  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;   @  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;   @  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;0000060&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;370&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;001&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;  &lt;span class=&#34;se&#34;&gt;\0&lt;/span&gt;                                                
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;0000064&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;-c: 16进制格式查看
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;-n 100: 显示前100位
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;lsblk-查看所有的块设备&#34;&gt;lsblk: 查看所有的块设备
+&lt;/h5&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops bin&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# lsblk &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;vdb    253:16   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;  500G  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; disk 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;└─vdb1 253:17   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;  500G  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; part 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;vda    253:0    &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;  100G  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; disk 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;└─vda1 253:1    &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;  100G  &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; part /
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;名字 主设备号:次设备号 移动设备 大小 只读 类型 挂载点
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;移动设备 标记为1
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;只读设备 标记为1
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;注意观察size的大小，size小于1K的基本是扩展分区，关于分区，后续会讲到&lt;/strong&gt;&lt;/p&gt;
+&lt;h5 id=&#34;sha1sum查看哈希校验码&#34;&gt;sha1sum：查看哈希校验码
+&lt;/h5&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops bin&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# sha1sum redis-cli &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;f03302d1760eba294b8996e59b9b56f519499869  redis-cli
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;ldd查看命令使用的链接库&#34;&gt;ldd：查看命令使用的链接库
+&lt;/h5&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops bin&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# ldd redis-cli &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        linux-vdso.so.1 &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&amp;gt;  &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;0x00007ffd40ba2000&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        libm.so.6 &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&amp;gt; /lib64/libm.so.6 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;0x00007f68af811000&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        libdl.so.2 &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&amp;gt; /lib64/libdl.so.2 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;0x00007f68af60d000&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        libpthread.so.0 &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&amp;gt; /lib64/libpthread.so.0 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;0x00007f68af3f1000&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        libc.so.6 &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&amp;gt; /lib64/libc.so.6 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;0x00007f68af024000&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        /lib64/ld-linux-x86-64.so.2 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;0x00007f68afb13000&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h5 id=&#34;dd-转换和复制一个文件&#34;&gt;dd: 转换和复制一个文件
+&lt;/h5&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;root@ops ~&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;# dd if=/dev/zero of=f1 bs=1M count=100&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;100+0 records in
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;100+0 records out
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;104857600&lt;/span&gt; bytes &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;105&lt;/span&gt; MB&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; copied, 0.0613801 s, 1.7 GB/s
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;: 文件源
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;of: 目的文件
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;bs: 单个块大小
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;count: 总共写入多少块
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;总大小&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;bs乘count
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;其他相关总结&#34;&gt;其他相关总结
+&lt;/h3&gt;&lt;p&gt;cpu指令集：x86架构主要使用CISC复杂指令集，价格相对便宜，还有 RISC精简指令集和EPIC并行指令代码，主要用于专用的服务器，价格相对高昂&lt;/p&gt;
+&lt;p&gt;bit和byte：位和字节，b和B，1B=8b，也就是一字节等于8位&lt;/p&gt;
+&lt;h4 id=&#34;linux哲学思想&#34;&gt;Linux哲学思想
+&lt;/h4&gt;&lt;p&gt;一切都是一个文件&lt;/p&gt;
+&lt;p&gt;小型，单一用途的程序&lt;/p&gt;
+&lt;p&gt;链接程序，共同完成复杂的操作&lt;/p&gt;
+&lt;p&gt;避免令人困惑的用户界面&lt;/p&gt;
+&lt;p&gt;配置数据存储在文本中&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

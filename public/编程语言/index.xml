@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>编程语言s on 千兆光年</title>
+        <link>http://localhost:1313/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/</link>
+        <description>Recent content in 编程语言s on 千兆光年</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 11 Jul 2020 10:19:03 +0800</lastBuildDate><atom:link href="http://localhost:1313/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>元类</title>
+        <link>http://localhost:1313/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/python/metaclass/</link>
+        <pubDate>Sat, 11 Jul 2020 10:19:03 +0800</pubDate>
+        
+        <guid>http://localhost:1313/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/python/metaclass/</guid>
+        <description>&lt;p&gt;动态语言在创建类的时候，是动态创建的&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Hello&lt;/span&gt;(object):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;hello&lt;/span&gt;(self, name&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;world&amp;#39;&lt;/span&gt;):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		    print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;hello&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上边是我们创建的一个类，我们可以使用&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; type(Hello)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;type&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;我们使用type插件类的类型的时候，我们发现，他返回的是type类型的。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; h&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Hello()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; type(h)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;__main__&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Hello&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;实例化以后，我们可以看到，h的类型是一个Hello。&lt;/p&gt;
+&lt;p&gt;实际上，当我们使用class关键字创建类的时候，背后也是调用type函数来创建处class。&lt;/p&gt;
+&lt;p&gt;元类是类的类，类定义类实例也就是类对象的行为，元类定义类本身的行为。一个类是一个元类的实例。&lt;/p&gt;
+&lt;p&gt;也就是通常我们使用&lt;code&gt;class&lt;/code&gt;关键字来定义一个类，实际上是实例化了一个元类的对象。&lt;/p&gt;
+&lt;p&gt;梳理一下关系：先定义元类，接下来使用type或者class创建类，然后实例化创建的类，也就是成为一个对象了。可以说是非常的绕了。&lt;/p&gt;
+&lt;p&gt;如何定义一个简单的元类：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# 注意这里继承的是type，元类必须从type中派生&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ListMetaclass&lt;/span&gt;(type)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; __new__(cls, name, bases, sttrs):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       attrs[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;add&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;lambda&lt;/span&gt; self, vlaue: self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;append(value)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; type&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;__new__(cls, name, basesm, attrs)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如何使用自定义元类，定制创建的类？&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;MyList&lt;/span&gt;(list, metaclass&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;ListMetaclass):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;pass&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;当我们传入关键字参数metaclass的时候，魔术就生效了，他会告诉解释器，使用ListMetaclass.&lt;em&gt;&lt;strong&gt;new&lt;/strong&gt;&lt;/em&gt;() （markdowm的问题，下划线不显示），来创建，解析下几个参数，&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;1，准备创建的类的对象&lt;/li&gt;
+&lt;li&gt;2，名称，&lt;/li&gt;
+&lt;li&gt;3，类继承的父类集合，&lt;/li&gt;
+&lt;li&gt;4，类的方法集合&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在一般的使用场景中，我们一般不会用到这种方式来自己构建一个元类，但是在其他的场景中，使用元类可能会更简单，如ORM。一行映射为一个对象，一个类映射为一个表。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;User&lt;/span&gt;(Model):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# 定义类的属性到列的映射：&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; IntegerField(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;id&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    name &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; StringField(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;username&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    email &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; StringField(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;email&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    password &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; StringField(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;password&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 创建一个实例：&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;u &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; User(id&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;12345&lt;/span&gt;, name&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Michael&amp;#39;&lt;/span&gt;, email&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;test@orm.org&amp;#39;&lt;/span&gt;, password&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;my-pwd&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 保存到数据库：&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;u&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;save()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面的属性类型是有框架提供，save方法是由元类提供&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Fied&lt;/span&gt;(object):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  def&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;__init__(self, name, type):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;name &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; name
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;type &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; type
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; __str__(self):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;gt;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;__class__&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;__name__, self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;name)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;基于父类定义各种的常见类型：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;StringFied&lt;/span&gt;(Field):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; __init__(self, name):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    super(StringField, self)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;__init__(name, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;varchar(100)&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+        </item>
+        <item>
+        <title>Goroutine</title>
+        <link>http://localhost:1313/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/golang/goroutine/</link>
+        <pubDate>Wed, 01 Jul 2020 10:05:02 +0800</pubDate>
+        
+        <guid>http://localhost:1313/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/golang/goroutine/</guid>
+        <description>&lt;h1 id=&#34;进程线程协程&#34;&gt;进程·线程·协程
+&lt;/h1&gt;&lt;p&gt;概念上来说，进程和线程都是内核来进行调度的，有CPU时间片的概念，进行的是抢占式调度。协程是工作在用户空间的，是用户级线程，也就是说，协程对于内核是透明的，内核感知不到协程的存在，完全由用户程序自行控制，这样就不能像内核的进程和线程那样进行抢占式调度，只能自己协调式调度，协程主动把控制权交出去，其他协程才能执行。&lt;/p&gt;
+&lt;p&gt;进程是资源分配和调度的基本单位，线程是CPU调度的基本单位。可以这样理解，计算机资源抽象分为计算资源和存储资源，进程可以申请存储和CPU。也就是进程可以分配运行的全部资源。线程其实是进程的一个实体，线程不能独立分配存储资源，也就是说，一个进程的多个线程是共享存储空间的。但是线程可以分配计算资源，也就是说可以参与CPU的调度。线程只拥有运行的必不可少的资源，不分配系统资源。&lt;/p&gt;
+&lt;p&gt;一个程序至少拥有一个进程，一个进程至少拥有一个线程。&lt;/p&gt;
+&lt;p&gt;多线程适用CPU密集型，用于多分配CPU来计算&lt;/p&gt;
+&lt;p&gt;多线程适用于IO密集型，用于服务端响应客户端，适用于大量IO操作&lt;/p&gt;
+&lt;h1 id=&#34;协程&#34;&gt;协程
+&lt;/h1&gt;&lt;p&gt;本质上来说，goroutine就是协程，区别在于，Golang在runtime和系统调用多方面对goroutine进行了封装和处理，等待时间长时，会主动让出CPU。&lt;/p&gt;
+&lt;p&gt;1，内存消耗：2K， 线程：8M&lt;/p&gt;
+&lt;p&gt;2，线程切换，涉及16个寄存器，goroutine：涉及3个寄存器&lt;/p&gt;
+&lt;h4 id=&#34;go协程的实现原理&#34;&gt;GO协程的实现原理
+&lt;/h4&gt;&lt;p&gt;多线程编程时，上下文的切换存在一定的消耗。协程是在应用层模拟的线程，避免了上下文切换的消耗，兼顾了多线程的优点。如：一个socket连接可以用一个协程来处理。&lt;/p&gt;
+&lt;p&gt;线程和协程的实现原理是一样的。线程切换时，需要把上一个执行的线程压栈，当前运行的线程信息出栈，协程是在应用层实现了这一点，但协程不是操作系统调度的，是应用程序调度的。但一般会问？应用程序没有cpu调度的能力啊，怎么解决呢？&lt;/p&gt;
+&lt;p&gt;其实，协程是基于线程的。在内部实现来说，维护了一组数据结构和一组线程，真正来执行的还是线程。协程执行的代码被存储在一个队列中，待执行队列，维护的一组线程不断的拉取协程来执行。协程是怎么切换的呢？golang本身封装了系统的io函数，通过runtime统一提供给程序适用，内部调用了系统的异步io函数，当函数返回busy或者阻塞状态时，golang本身会存储状态，然后通知调度器继续执行其他协程。&lt;/p&gt;
+&lt;p&gt;Goroutine采用的是M：N模型实现的用户态协程调度机制，也就是m个协程运行在n个系统线程上。一个goroutine执行系统调用时，系统线程会阻塞，这时候调度器会唤醒一个新的线程或者创建一个新的线程来继续执行协程。当发生管道调用时，进程可能会阻塞，但是系统线程和协程不会阻塞，会继续执行。&lt;/p&gt;
+&lt;p&gt;Go调度模型&lt;/p&gt;
+&lt;p&gt;M P G Sched&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://cdn.oyfacc.cn/groutine.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;groutine&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;M代表用户线程，M是一个大结构，里面有当前执行的协程等信息，P是处理器，用于运行协程，还有一个队列，存储了要执行的协程，G是协程&lt;/p&gt;
+&lt;p&gt;sched是调度器，维护M和G队列等一些状态信息。&lt;/p&gt;
+&lt;p&gt;P的数量一般取决于GoMAXPROCS环境变量，通常和核心数相等，最大限度利用CPU。&lt;/p&gt;
+&lt;p&gt;G的数量一般会有很多，每个P都会从G的就绪队列pop操作，一般一个P负责一个队列，减少锁的开销。&lt;/p&gt;
+&lt;p&gt;当groutine需要执行一个系统调用时，由于M是一个线程，所以必须等待完成，此时，必须保证有一个M能正常执行其他G。当系统调用返回时，M需要调度G到一个P上，继续执行，如果不能，需要把G放到全局队列中，并且自己放到线程缓存中。&lt;/p&gt;
+&lt;p&gt;P其实是一个衔接M和G的调度上下文，负责他们直接的对接。&lt;/p&gt;
+&lt;h4 id=&#34;调度器&#34;&gt;调度器
+&lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;http://cdn.oyfacc.cn/go-runtime.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;runtime&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;上图可以清晰的看到，go程序运行时统一经过runtime来和底层交互&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://cdn.oyfacc.cn/gogpm.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;gpm&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;go运行时有两个队列，全局队列和本地队列，本地队列就是自己维护的队列，为了运行G，M需要持有上下文P，M从P的队列弹出G来执行。新创建的G被放在P的队列中，当M执行的P的队列为空的时候，会随机选择一个P，把他队列中的G取走一般到自己的P的队列中，也就是窃取。&lt;/p&gt;
+&lt;p&gt;当G阻塞，M也会阻塞，runtime会把M从P上摘除，创建新的M，如果没有空闲的M的话，然后把P和M连接，继续运行。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Python装饰器</title>
+        <link>http://localhost:1313/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/python/%E8%A3%85%E9%A5%B0%E5%99%A8/</link>
+        <pubDate>Tue, 03 Mar 2020 23:03:27 +0800</pubDate>
+        
+        <guid>http://localhost:1313/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/python/%E8%A3%85%E9%A5%B0%E5%99%A8/</guid>
+        <description>&lt;h1 id=&#34;python装饰器&#34;&gt;python装饰器
+&lt;/h1&gt;&lt;p&gt;python函数的几个核心概念
+1，函数可以赋值给变量&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def func(message):
+  print(&amp;#34;got&amp;#34;)
+send = func
+send(&amp;#34;hello&amp;#34;)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;2，函数可以当做参数传递给另一个函数&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def get(message):
+   return message
+def root(func, message):
+    print(func(message))
+root(get, &amp;#34;message&amp;#34;)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;3,函数里定义函数，返回函数&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def func(message):
+    def get(message):
+       print(message)
+    return get(message)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;4，看一个装饰器的例子&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def my(func):
+    def wa():
+      print(&amp;#34;1111&amp;#34;)
+      func()
+    return wa
+def geet():
+    print(&amp;#39;ello&amp;#39;)
+    
+geet = my(geet)
+geet()
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;变量指向内部函数wa，内部函数wa调用geet函数本身，所以装饰器的根本含义就是把要执行的函数包裹在其中，并且附加了一些功能
+更优雅的表示如下：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;def my(func):
+    def wa():
+      print(&amp;#34;1111&amp;#34;)
+      func()
+    return wa
+@my
+def geet():
+    print(&amp;#39;ello&amp;#39;)
+geet()
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;这里的@是一个语法糖，作用相当于geet=my（geet），只不过更加简洁，大大提高程序的可读性。&lt;/p&gt;
+&lt;h3 id=&#34;带参数的装饰器&#34;&gt;带参数的装饰器
+&lt;/h3&gt;&lt;p&gt;通常情况下我们会把*args和 **kwargs作为装饰器内部函数的参数，表示接受任意数量和类型的参数&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

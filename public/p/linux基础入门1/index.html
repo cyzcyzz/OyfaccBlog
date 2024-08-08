@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="概述 冯诺伊曼体系结构的计算机是现在计算机系统的基石。现代计算机系统，在整体上划分为硬件系统和软件系统。硬件系统又包括内部的硬件和外部的硬件。">
+<title>Linux基础入门(1)</title>
+
+<link rel='canonical' href='http://localhost:1313/p/linux%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A81/'>
+
+<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="Linux基础入门(1)">
+<meta property='og:description' content="概述 冯诺伊曼体系结构的计算机是现在计算机系统的基石。现代计算机系统，在整体上划分为硬件系统和软件系统。硬件系统又包括内部的硬件和外部的硬件。">
+<meta property='og:url' content='http://localhost:1313/p/linux%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A81/'>
+<meta property='og:site_name' content='千兆光年&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2020-03-16T23:33:11&#43;08:00'/><meta property='article:modified_time' content='2020-03-16T23:33:11&#43;08:00'/>
+<meta name="twitter:title" content="Linux基础入门(1)">
+<meta name="twitter:description" content="概述 冯诺伊曼体系结构的计算机是现在计算机系统的基石。现代计算机系统，在整体上划分为硬件系统和软件系统。硬件系统又包括内部的硬件和外部的硬件。">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hubc17befab17dd0b1c2a98d159e9c9948_24796263_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🏀</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">千兆光年&#39;s Blog</a></h1>
+            <h2 class="site-description">程元召要努力💪!</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/cyzcyzz'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='/index.xml'
+                        target="_blank"
+                        title="RSS"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rss" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="5" cy="19" r="1" />
+  <path d="M4 4a16 16 0 0 1 16 16" />
+  <path d="M4 11a9 9 0 0 1 9 9" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#概述">概述</a>
+      <ol>
+        <li><a href="#命令总结">命令总结</a>
+          <ol>
+            <li></li>
+          </ol>
+        </li>
+        <li><a href="#其他相关总结">其他相关总结</a>
+          <ol>
+            <li><a href="#linux哲学思想">Linux哲学思想</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/linux/" >
+                Linux
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/linux%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A81/">Linux基础入门(1)</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Mar 16, 2020</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 3 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="概述">概述
+</h2><p><img src="http://cdn.oyfacc.cn/linux/linux-one.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="one-one"
+	
+	
+></p>
+<p>  冯诺伊曼体系结构的计算机是现在计算机系统的基石。现代计算机系统，在整体上划分为硬件系统和软件系统。硬件系统又包括内部的硬件和外部的硬件。内部硬件主要包含CPU和内存，cpu就包含传统的控制器和运算器还有寄存器这些，内存分为RAM（随机存取存储器），ROM（只读存储器）。外部设备又包含硬盘存储，输入和输出设备等。而软件主要分为系统软件和应用软件。系统软件有操作系统，数据库系统这些。应用软件主要是通用软件和专用软件，如360杀毒是应用软件，如erp系统就属于专用软件。</p>
+<p>操作系统是基石，也是最重要的系统软件，是和硬件交互的主要渠道，也是各类应用软件的载体。Linux操作系统是主流的操作系统，是开源领域软件的杰出代表，占据服务器的操作系统的大部分市场，可以说Linux系统是非常重要的。</p>
+<p>通常所说的linux系统，主要指带Linux内核，根据开源软件协议，各发行商将工具融合和linux一起打包成便于操作的系统，这就是不同的linux发型版的由来。linux的发型版是非常多的，而主流的主要分为如下的几个：</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>系统名称</th>
+<th>代表1</th>
+<th>代表2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fedora系</td>
+<td>redhat</td>
+<td>centos</td>
+</tr>
+<tr>
+<td>debian系</td>
+<td>ubuntu</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>发型版系统= linux内核+GNU工具</p>
+<p>计算机体系结构方面的知识可以参照上图，具体和详细的可以推荐参考《计算机组成原理》这本书，作者是唐朔飞，这是很多大学计算机专业课用书，专业度毋庸置疑。链接在这里<a class="link" href="https://item.jd.com/12271404.html"  target="_blank" rel="noopener"
+    >组成原理链接</a></p>
+<h3 id="命令总结">命令总结
+</h3><h5 id="lscpu命令查看当前机器的cpu信息">lscpu命令：查看当前机器的cpu信息
+</h5><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>root@ops ~<span class="o">]</span><span class="c1"># lscpu</span>
+</span></span><span class="line"><span class="cl">Architecture:          x86_64
+</span></span><span class="line"><span class="cl">CPU op-mode<span class="o">(</span>s<span class="o">)</span>:        32-bit, 64-bit
+</span></span><span class="line"><span class="cl">Byte Order:            Little Endian
+</span></span><span class="line"><span class="cl">CPU<span class="o">(</span>s<span class="o">)</span>:                <span class="m">4</span>
+</span></span><span class="line"><span class="cl">On-line CPU<span class="o">(</span>s<span class="o">)</span> list:   0-3
+</span></span><span class="line"><span class="cl">Thread<span class="o">(</span>s<span class="o">)</span> per core:    <span class="m">2</span>
+</span></span><span class="line"><span class="cl">Core<span class="o">(</span>s<span class="o">)</span> per socket:    <span class="m">2</span>
+</span></span><span class="line"><span class="cl">Socket<span class="o">(</span>s<span class="o">)</span>:             <span class="m">1</span>
+</span></span><span class="line"><span class="cl">NUMA node<span class="o">(</span>s<span class="o">)</span>:          <span class="m">1</span>
+</span></span><span class="line"><span class="cl">Vendor ID:             GenuineIntel
+</span></span><span class="line"><span class="cl">CPU family:            <span class="m">6</span>
+</span></span><span class="line"><span class="cl">Model:                 <span class="m">85</span>
+</span></span><span class="line"><span class="cl">Model name:            Intel<span class="o">(</span>R<span class="o">)</span> Xeon<span class="o">(</span>R<span class="o">)</span> Gold <span class="m">6151</span> CPU @ 3.00GHz
+</span></span><span class="line"><span class="cl">Stepping:              <span class="m">4</span>
+</span></span><span class="line"><span class="cl">CPU MHz:               3000.000
+</span></span><span class="line"><span class="cl">BogoMIPS:              6000.00
+</span></span><span class="line"><span class="cl">Hypervisor vendor:     KVM
+</span></span><span class="line"><span class="cl">Virtualization type:   full
+</span></span><span class="line"><span class="cl">L1d cache:             32K
+</span></span><span class="line"><span class="cl">L1i cache:             32K
+</span></span><span class="line"><span class="cl">L2 cache:              1024K
+</span></span><span class="line"><span class="cl">L3 cache:              25344K
+</span></span><span class="line"><span class="cl">NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:     0-3
+</span></span></code></pre></div><h5 id="file命令查看文件类型">file命令：查看文件类型
+</h5><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>root@ops ~<span class="o">]</span><span class="c1"># file alertmanager </span>
+</span></span><span class="line"><span class="cl">alertmanager: ELF 64-bit LSB executable, x86-64, version <span class="m">1</span> <span class="o">(</span>SYSV<span class="o">)</span>, statically linked, not stripped 可执行文件
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@ops ~<span class="o">]</span><span class="c1"># file a.json </span>
+</span></span><span class="line"><span class="cl">a.json: ASCII text 文本文件
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@ops ~<span class="o">]</span><span class="c1"># file control.sh </span>
+</span></span><span class="line"><span class="cl">control.sh: Bourne-Again shell script, ASCII text executable shell文件
+</span></span></code></pre></div><h5 id="hexdump命令查看二进制文件的内容">hexdump命令：查看二进制文件的内容
+</h5><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>root@ops bin<span class="o">]</span><span class="c1"># hexdump -c -n 100 redis-cli    </span>
+</span></span><span class="line"><span class="cl"><span class="m">0000000</span> <span class="m">177</span>   E   L   F <span class="m">002</span> <span class="m">001</span> <span class="m">001</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>
+</span></span><span class="line"><span class="cl"><span class="m">0000010</span> <span class="m">002</span>  <span class="se">\0</span>   &gt;  <span class="se">\0</span> <span class="m">001</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>   <span class="m">4</span>   e   @  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>
+</span></span><span class="line"><span class="cl"><span class="m">0000020</span>   @  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>   <span class="sb">`</span> <span class="m">345</span>  <span class="se">\a</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>
+</span></span><span class="line"><span class="cl"><span class="m">0000030</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>   @  <span class="se">\0</span>   <span class="m">8</span>  <span class="se">\0</span>  <span class="se">\t</span>  <span class="se">\0</span>   @  <span class="se">\0</span>   <span class="p">&amp;</span>  <span class="se">\0</span>   %  <span class="se">\0</span>
+</span></span><span class="line"><span class="cl"><span class="m">0000040</span> <span class="m">006</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span> <span class="m">005</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>   @  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>
+</span></span><span class="line"><span class="cl"><span class="m">0000050</span>   @  <span class="se">\0</span>   @  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>   @  <span class="se">\0</span>   @  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>  <span class="se">\0</span>
+</span></span><span class="line"><span class="cl"><span class="m">0000060</span> <span class="m">370</span> <span class="m">001</span>  <span class="se">\0</span>  <span class="se">\0</span>                                                
+</span></span><span class="line"><span class="cl"><span class="m">0000064</span>
+</span></span><span class="line"><span class="cl">-c: 16进制格式查看
+</span></span><span class="line"><span class="cl">-n 100: 显示前100位
+</span></span></code></pre></div><h5 id="lsblk-查看所有的块设备">lsblk: 查看所有的块设备
+</h5><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>root@ops bin<span class="o">]</span><span class="c1"># lsblk </span>
+</span></span><span class="line"><span class="cl">NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+</span></span><span class="line"><span class="cl">vdb    253:16   <span class="m">0</span>  500G  <span class="m">0</span> disk 
+</span></span><span class="line"><span class="cl">└─vdb1 253:17   <span class="m">0</span>  500G  <span class="m">0</span> part 
+</span></span><span class="line"><span class="cl">vda    253:0    <span class="m">0</span>  100G  <span class="m">0</span> disk 
+</span></span><span class="line"><span class="cl">└─vda1 253:1    <span class="m">0</span>  100G  <span class="m">0</span> part /
+</span></span><span class="line"><span class="cl">名字 主设备号:次设备号 移动设备 大小 只读 类型 挂载点
+</span></span><span class="line"><span class="cl">移动设备 标记为1
+</span></span><span class="line"><span class="cl">只读设备 标记为1
+</span></span></code></pre></div><p><strong>注意观察size的大小，size小于1K的基本是扩展分区，关于分区，后续会讲到</strong></p>
+<h5 id="sha1sum查看哈希校验码">sha1sum：查看哈希校验码
+</h5><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>root@ops bin<span class="o">]</span><span class="c1"># sha1sum redis-cli </span>
+</span></span><span class="line"><span class="cl">f03302d1760eba294b8996e59b9b56f519499869  redis-cli
+</span></span></code></pre></div><h5 id="ldd查看命令使用的链接库">ldd：查看命令使用的链接库
+</h5><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>root@ops bin<span class="o">]</span><span class="c1"># ldd redis-cli </span>
+</span></span><span class="line"><span class="cl">        linux-vdso.so.1 <span class="o">=</span>&gt;  <span class="o">(</span>0x00007ffd40ba2000<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        libm.so.6 <span class="o">=</span>&gt; /lib64/libm.so.6 <span class="o">(</span>0x00007f68af811000<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        libdl.so.2 <span class="o">=</span>&gt; /lib64/libdl.so.2 <span class="o">(</span>0x00007f68af60d000<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        libpthread.so.0 <span class="o">=</span>&gt; /lib64/libpthread.so.0 <span class="o">(</span>0x00007f68af3f1000<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        libc.so.6 <span class="o">=</span>&gt; /lib64/libc.so.6 <span class="o">(</span>0x00007f68af024000<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        /lib64/ld-linux-x86-64.so.2 <span class="o">(</span>0x00007f68afb13000<span class="o">)</span>
+</span></span></code></pre></div><h5 id="dd-转换和复制一个文件">dd: 转换和复制一个文件
+</h5><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>root@ops ~<span class="o">]</span><span class="c1"># dd if=/dev/zero of=f1 bs=1M count=100</span>
+</span></span><span class="line"><span class="cl">100+0 records in
+</span></span><span class="line"><span class="cl">100+0 records out
+</span></span><span class="line"><span class="cl"><span class="m">104857600</span> bytes <span class="o">(</span><span class="m">105</span> MB<span class="o">)</span> copied, 0.0613801 s, 1.7 GB/s
+</span></span><span class="line"><span class="cl"><span class="k">if</span>: 文件源
+</span></span><span class="line"><span class="cl">of: 目的文件
+</span></span><span class="line"><span class="cl">bs: 单个块大小
+</span></span><span class="line"><span class="cl">count: 总共写入多少块
+</span></span><span class="line"><span class="cl"><span class="nv">总大小</span><span class="o">=</span>bs乘count
+</span></span></code></pre></div><h3 id="其他相关总结">其他相关总结
+</h3><p>cpu指令集：x86架构主要使用CISC复杂指令集，价格相对便宜，还有 RISC精简指令集和EPIC并行指令代码，主要用于专用的服务器，价格相对高昂</p>
+<p>bit和byte：位和字节，b和B，1B=8b，也就是一字节等于8位</p>
+<h4 id="linux哲学思想">Linux哲学思想
+</h4><p>一切都是一个文件</p>
+<p>小型，单一用途的程序</p>
+<p>链接程序，共同完成复杂的操作</p>
+<p>避免令人困惑的用户界面</p>
+<p>配置数据存储在文本中</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/linux%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A83/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Linux基础入门(3)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/p/linux%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A82/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Linux基础入门(2)</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <script src='//unpkg.com/@waline/client@v2/dist/waline.js'></script>
+<link href='//unpkg.com/@waline/client@v2/dist/waline.css' rel='stylesheet'/>
+<div id="waline" class="waline-container"></div>
+<style>
+    .waline-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+        --waline-font-size: var(--article-font-size);
+    }
+    .waline-container .wl-count {
+        color: var(--card-text-color-main);
+    }
+</style><script>
+    
+    Waline.init({"copyright":false,"dark":"html[data-scheme=\"dark\"]","el":"#waline","emoji":["/source/Sticker-100/"],"lang":"zh-CN","locale":{"admin":"👻屑博主","placeholder":"🎉留下你的脚印."},"pageview":true,"reaction":false,"requiredMeta":["name","email"],"search":false,"serverURL":"https://comment.linsnow.cn"});
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2024 OyFaCC
+    </section>
+    
+    <section class="powerby">
+        
+            <a href="https://beian.miit.gov.cn/" target="_blank">京ICP备 20009601号</a> <br/>
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

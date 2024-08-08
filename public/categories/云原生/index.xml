@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>云原生 on 千兆光年&#39;s Blog</title>
+        <link>http://localhost:1313/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/</link>
+        <description>Recent content in 云原生 on 千兆光年&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>OyFaCC</copyright>
+        <lastBuildDate>Fri, 24 Jul 2020 09:55:57 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Cgroups</title>
+        <link>http://localhost:1313/p/cgroups/</link>
+        <pubDate>Fri, 24 Jul 2020 09:55:57 +0800</pubDate>
+        
+        <guid>http://localhost:1313/p/cgroups/</guid>
+        <description>&lt;p&gt;进程隔离后，本身会看不到其他的进程，此时会发生一个问题，独占资源，也就是说，我这个进程会把全部的资源全部跑满，其他的进程抢夺不到资源，这时候我们通常需要对隔离的进程进行一些资源的限制，这就是Linux 下的cgroups技术。&lt;/p&gt;
+&lt;h3 id=&#34;简介&#34;&gt;简介
+&lt;/h3&gt;&lt;p&gt;cgroups是control groups的缩写，是内核提供的可以限制和隔离进程组所使用的资源的机制。&lt;/p&gt;
+&lt;p&gt;基本概念介绍&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;任务，task，通常是指一个系统进程&lt;/li&gt;
+&lt;li&gt;控制组，是按照一个标准划分的一组进程，资源控制都是以控制组为单位的。一个进程可以加入到一个控制组，也可以从一个进程组迁移到另一个控制组。&lt;/li&gt;
+&lt;li&gt;层级，控制组可以组织成层级的形式，就像是一颗树。控制族群树上的子节点继承父节点的属性&lt;/li&gt;
+&lt;li&gt;子系统，一个子系统就是一个资源控制器，如cpu，mem等，代表着一种可以限制的资源。一个子系统附加到一个层级后，表示这个层级上的控制组全部受这个子系统控制。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;原理&#34;&gt;原理
+&lt;/h3&gt;&lt;p&gt;cgroups的本质是给系统进程上挂上钩子（hooks），当task运行的时候触发钩子上所附带的子系统进行检测，最终按照设置进行资源限制和优先级分配。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;/proc/cgroups&lt;/code&gt;可以查看支持的子系统&lt;/p&gt;
+&lt;p&gt;cgroups提供了虚拟文件系统作为用户接口，要是用系统，必须先进行挂载，默认挂载&lt;code&gt;/sys/fs/cgroups&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&#34;规则&#34;&gt;规则
+&lt;/h3&gt;&lt;p&gt;同一个层级结构可以挂载多个子系统 ，一个子系统只能附加到一个层级结构上&lt;/p&gt;
+&lt;p&gt;每次系统创建新层级时，该层级内的所有任务都是默认cgroups也就是root cgroups的初始成员，根层级时系统自动创建的&lt;/p&gt;
+&lt;p&gt;一个任务可以时多个控制组的成员，但是cgroups必须是不同的层级&lt;/p&gt;
+&lt;p&gt;父进程clone子进程时，子进程自动属于父进程所属的控制组，可以根据需要移出&lt;/p&gt;
+&lt;h3 id=&#34;命令&#34;&gt;命令
+&lt;/h3&gt;&lt;h4 id=&#34;lssubsys&#34;&gt;lssubsys
+&lt;/h4&gt;&lt;p&gt;查看全部子系统&lt;/p&gt;
+&lt;h4 id=&#34;lscgroup&#34;&gt;lscgroup
+&lt;/h4&gt;&lt;p&gt;查看全部的控制组&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Docker三部曲</title>
+        <link>http://localhost:1313/p/docker%E4%B8%89%E9%83%A8%E6%9B%B2/</link>
+        <pubDate>Wed, 04 Mar 2020 23:03:27 +0800</pubDate>
+        
+        <guid>http://localhost:1313/p/docker%E4%B8%89%E9%83%A8%E6%9B%B2/</guid>
+        <description>&lt;h2 id=&#34;概述&#34;&gt;概述
+&lt;/h2&gt;&lt;p&gt;对于整个docker容器技术的体系来说，主要划分为三部分：镜像，容器和仓库&lt;/p&gt;
+&lt;h2 id=&#34;什么是镜像&#34;&gt;什么是镜像
+&lt;/h2&gt;&lt;p&gt;在操作系统的体系，整个空间被横向切割为两大空间，内核空间和用户空间，在Linux系统启动的时候，内核启动后，会挂载一个root文件系统为用户空间提供支持，而镜像其实就是一个root文件系统，但是是一种特殊的root文件系统，提供包含了容器运行时所需要的程序，文件，资源，库，配置，还包含一些环境变量，用户等，镜像包含的全是静态的文件，在构建完成后，将不会改变。&lt;/p&gt;
+&lt;p&gt;如何形象的理解镜像？其实我们可以想象一下，镜像其实就是一个高层楼房，是有一层层叠加构成的。最初，什么也没有的时候就是空白镜像。后来我在空地上建了一层房子，并且分割好一个个房间，把东西分门别类的放进去，这就构成了我们的镜像，这里镜像可能是流行的发型版，如：红帽，乌班图等。后来，我发现我需要一个新的功能，但是一层已经建好，而且摆放好了，我只能再建一层，把我要的东西存储进去。所以整体看起来，镜像是分层的。这里就会存在一个问题，二层可能有三个住户，他们都想去一层修改东西，这就会导致大家读到的东西是不一致的，为了解决这个问题，一层就规定，我这一层是只能读的，不能写，你们要写，请复制一份到你们那里，自己修改。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://cdn.oyfacc.cn/docker/docker-image.jpg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;镜像使用的技术&#34;&gt;镜像使用的技术
+&lt;/h4&gt;&lt;p&gt;Union FS 联合文件系统是镜像技术使用的文件系统技术，为什么使用这个技术？镜像包含一个root文件系统，一般来说可能会比较大，所以使用分层存储的架构，ISO类型的镜像和这个是不一样的，这里的docker镜像其实是一个虚拟的概念，其最终的体现往往是一组文件系统的组合，而ISO一般是一个打包好的文件。
+镜像build时一般是一层层生成，前一层是后一层的基础，本层build完就会固定，不会发生改变了，执行删除操作一般是标记为不可见，文件会一直存在，因此构建是尽量减少冗余文件的生成。&lt;/p&gt;
+&lt;h2 id=&#34;什么是容器&#34;&gt;什么是容器
+&lt;/h2&gt;&lt;p&gt;镜像和容器的关系，就像程序和进程的关系，容器就是运行时的镜像，容器可以被启动，停止，删除，暂停等，镜像一般只能被创建和删除。容器运行时会被添加一层可写层在最上边，用于容器运行时的数据增删改查，停止后会消失，不被保存，如何保存，会在后续的文章中说明。
+  容器运行的本质是进程,但和普通的进程是不一样的，他被添加了障眼法，运行在一个与世隔绝的空间内，也就是自己的名称空间内，就好像是一个独立的用户空间一样。空间内有自己的网络配置，用户，进程等。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://cdn.oyfacc.cn/docker/continer.jpg&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;cont&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;什么是仓库&#34;&gt;什么是仓库
+&lt;/h2&gt;&lt;p&gt;仓库，顾名思义就是存储镜像的地方，因为我们的镜像不是运行在一个主机上，在多个主机之间进行镜像的传输，就需要有一个存储和分发镜像的地方，就是仓库。一个仓库通常被永爱存储同一个镜像的不同版本，仓库被residtry统一管理。仓库名通常xx/xx:tag这种格式，用户名/服务名:tag,一般在私有仓库中往往是 地址or域名:端口/服务名:tag,这种格式，公有的docker registry是docker hub，私有的包含harbor或者nexus，或者官方的regisitry api。&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://hub.docker.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Docker Hub 官方仓库地址&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;docker结构分解&#34;&gt;docker结构分解
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;http://containerd.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;containerd&lt;/a&gt; is a container runtime which can manage a complete container lifecycle - from image transfer/storage to container execution, supervision and networking.&lt;/li&gt;
+&lt;li&gt;container-shim handle headless containers, meaning once runc initializes the containers, it exits handing the containers over to the container-shim which acts as some middleman.&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;http://runc.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;runc&lt;/a&gt; is lightweight universal run time container, which abides by the OCI specification. runc is used by containerd for spawning and running containers according to OCI spec. It is also the repackaging of libcontainer.&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;http://www.grpc.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;grpc&lt;/a&gt; used for communication between containerd and docker-engine.&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.opencontainers.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;OCI&lt;/a&gt; maintains the OCI specification for runtime and images. The current docker versions support OCI image and runtime specs.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

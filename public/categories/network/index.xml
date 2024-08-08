@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Network on 千兆光年&#39;s Blog</title>
+        <link>http://localhost:1313/categories/network/</link>
+        <description>Recent content in Network on 千兆光年&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>OyFaCC</copyright>
+        <lastBuildDate>Fri, 06 Mar 2020 23:03:27 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/network/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>TCP问题</title>
+        <link>http://localhost:1313/p/tcp%E9%97%AE%E9%A2%98/</link>
+        <pubDate>Fri, 06 Mar 2020 23:03:27 +0800</pubDate>
+        
+        <guid>http://localhost:1313/p/tcp%E9%97%AE%E9%A2%98/</guid>
+        <description>&lt;h1 id=&#34;tcp连接总结&#34;&gt;TCP连接总结
+&lt;/h1&gt;&lt;p&gt;  最近一些时间线上的服务器会报TcpListenDrop和TcpOverFlowed的警告，一开始是不知道这究竟什么含义,然后开始研究tcp队列的相关含义，下面进行一些总结。
+  TCP三次握手，四次分手是大家耳熟能详的过程，甚至多数人都能说明“为什么三次握手和四次握手”，但是当我们真正去实际的解决问题的时候，我们往往不能将这些理论和实际结合起来，我相信大多数的技术人员甚至不能说明整个连接过程的11种状态，这也就是为什么我们不能实际的解决问题，因为状态的变化，可以为我们提供非常多的有效信息，下面一张图搞定这些状态的变化和出现的终端。
+&lt;img src=&#34;http://cdn.oyfacc.cn/network/tcp-3link.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;net-one&#34;
+	
+	
+&gt;
+这张图很清晰展现了tcp从建立连接到数据传输完成断开连接的整个状态的变化，这里对每个状态简要的进行说明下：&lt;/p&gt;
+&lt;h4 id=&#34;服务端&#34;&gt;服务端
+&lt;/h4&gt;&lt;p&gt; 这里一般是指被动接受的一方，不一定非得是服务器的一端；
+ &lt;code&gt;LISTEN&lt;/code&gt;:这个状态是服务端最开始状态，此时等待客户端进行连接；
+ &lt;code&gt;SYN_RCVD&lt;/code&gt;:这个状态是等待客户端进行确认的状态，此时客户端发来确认位，即可建立连接；
+ &lt;code&gt;ESTABLISHED&lt;/code&gt;: 著名的连接建立状态；
+ &lt;code&gt;CLOSE_WAIT&lt;/code&gt;:客户端主动发起分手，服务端收到请求，并且确认后的状态；
+ &lt;code&gt;LAST_ACK&lt;/code&gt;:服务端发起最后一次分手后的状态，此时等待客户端确认;
+ &lt;code&gt;CLOSE&lt;/code&gt;:关闭状态，客户端回复最后一次分手后的状态；&lt;/p&gt;
+&lt;h4 id=&#34;客户端&#34;&gt;客户端
+&lt;/h4&gt;&lt;p&gt; 这里一般是指主动发起连接的一方，不一定是终端用户；
+ &lt;code&gt;CLOSED&lt;/code&gt;:被动关闭状态，此时可以调connect方法连接服务端；
+ &lt;code&gt;SYN_SEND&lt;/code&gt;:发送完连接后的状态,此时等待服务端回复；
+ &lt;code&gt;FIN_WAIT1&lt;/code&gt;:主动调用close方法后的状态，此时发送了一个fin信号；
+ &lt;code&gt;FIN_WAIT2&lt;/code&gt;: 收到服务端对第一次发起fin状态的回复后的状态，此时等待服务端调用close方法，发起最后一次fin；
+ &lt;code&gt;TIME_WAIT&lt;/code&gt;:此时服务端主动发送了最后一次FIN,客户端接收后，恢复了确认位，进入这个状态，等待最后的超市关闭,下面一段记录了几个内核参数，用于调整TCP的一些状态；&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;net.ipv4.tcp_syncookies = 1 表示开启SYN Cookies。当出现SYN等待队列溢出时，启用cookies来处理，可防范少量SYN攻击，默认为0，表示关闭；
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;net.ipv4.tcp_tw_reuse = 1 表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭；
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;net.ipv4.tcp_tw_recycle = 1 表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭。
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+        </item>
+        
+    </channel>
+</rss>

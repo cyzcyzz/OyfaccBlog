@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="前言 学习了一些基本的概念，我们开始一层层拆解K8S。学习任何一个主流的技术之前，一般都是从他的架构开始学习，这样可以比较全面的把握它的工作流程。 本片文章介绍如下内容： 1-什么是集群控制平面和节点 2-etcd的基础介绍 3-附件和插件机制 集群控制平面 集群控制平面，又叫做AKA master，也就是我们通常所说的master节点，通常是用于控制整个集群的运行状态。他可以单节点运行，也可以高可用运行，也可以托管于自身的集群上运行。支持REST API去CRUD集群资源。控制平面提供了集群唯一的入口，集群内的全部资源的操作，都要通过master节点来进行，提供了安全性的保证，可提供了便捷的操作。master节点主要包含如下的组件： 名称 主要功能 API server k8s api服务，主要提供REST操作，验证资源和更新资源和etcd交互 Contorller Manager 其他集群功能的控制使用一个单独的进程来管理，就是控制管理器，控制某种资源的预期状态 Scheculer 监控未调度的pod去绑定他们到主机，通过/binding的pod子api etcd 集群状态存储，api server所有的更新数据都要存储在etcd内部，同时etcd提供了watch的支持，就是当数据发生变化的时候回返回当前的数据，未发生变化时，阻塞watch的进程。 以上的组建主要是master节点所要依赖的组建，其中存储组建可以单独作为一个种类介绍 节点 这里的节点就是前文中的node，主要是k8s中的工作节点，主要负责运行pod。主要包含如下的组建： 名称 主要功能 kubelet 主要负责运行调度到该节点上的pod，并且负责上报当前节点上的全部pod的运行状态 containner runtime 容器运行时，主要是把容器跑起来，拉取镜像。kubelet和容器运行时通过容器运行时接口来交互，接口目前支持：rkt，docker，cri-o，frakti kube-proxy kubeproxy创建规则于iptables上，用于提供负载均衡和高可用解决方案，将流量转发到后端的pod上 add-ons &amp; plugins 附件，主要为集群提供扩展功能，目前主流的附件包含如下几个： 名称 作用 DNS 提供解析功能和服务发现功能，用于集群内部的pod之间的通讯解析和查找 network 主要是集群之间的node进行通讯提供功能，主要是为每个节点分配一个网段的地址，每个pod调度后就可以获取到一个IP地址，通过ip地址进行通讯 总结 本片文章主要把一些基本的概念进行了一些简单的讲述，接下来的几篇文章会对几个流程进行讲解，主要包含如下几个： 1-master节点和node节点之间的通讯 2-调度器的工作机制 3-控制器的工作机制 4-kubelet运行机制 5-一个pod的完整运行流程总结">
+<title>Kubernetes基础架构(3)</title>
+
+<link rel='canonical' href='http://localhost:1313/%E4%BA%91%E5%8E%9F%E7%94%9F%E6%8A%80%E6%9C%AF/kubernetes-base-3/'>
+
+<link rel="stylesheet" href="/scss/style.min.0304c6baf04e01a8fe70693791cb744d56a3578a3120a8796cefc66825aa39c7.css"><meta property='og:title' content="Kubernetes基础架构(3)">
+<meta property='og:description' content="前言 学习了一些基本的概念，我们开始一层层拆解K8S。学习任何一个主流的技术之前，一般都是从他的架构开始学习，这样可以比较全面的把握它的工作流程。 本片文章介绍如下内容： 1-什么是集群控制平面和节点 2-etcd的基础介绍 3-附件和插件机制 集群控制平面 集群控制平面，又叫做AKA master，也就是我们通常所说的master节点，通常是用于控制整个集群的运行状态。他可以单节点运行，也可以高可用运行，也可以托管于自身的集群上运行。支持REST API去CRUD集群资源。控制平面提供了集群唯一的入口，集群内的全部资源的操作，都要通过master节点来进行，提供了安全性的保证，可提供了便捷的操作。master节点主要包含如下的组件： 名称 主要功能 API server k8s api服务，主要提供REST操作，验证资源和更新资源和etcd交互 Contorller Manager 其他集群功能的控制使用一个单独的进程来管理，就是控制管理器，控制某种资源的预期状态 Scheculer 监控未调度的pod去绑定他们到主机，通过/binding的pod子api etcd 集群状态存储，api server所有的更新数据都要存储在etcd内部，同时etcd提供了watch的支持，就是当数据发生变化的时候回返回当前的数据，未发生变化时，阻塞watch的进程。 以上的组建主要是master节点所要依赖的组建，其中存储组建可以单独作为一个种类介绍 节点 这里的节点就是前文中的node，主要是k8s中的工作节点，主要负责运行pod。主要包含如下的组建： 名称 主要功能 kubelet 主要负责运行调度到该节点上的pod，并且负责上报当前节点上的全部pod的运行状态 containner runtime 容器运行时，主要是把容器跑起来，拉取镜像。kubelet和容器运行时通过容器运行时接口来交互，接口目前支持：rkt，docker，cri-o，frakti kube-proxy kubeproxy创建规则于iptables上，用于提供负载均衡和高可用解决方案，将流量转发到后端的pod上 add-ons &amp; plugins 附件，主要为集群提供扩展功能，目前主流的附件包含如下几个： 名称 作用 DNS 提供解析功能和服务发现功能，用于集群内部的pod之间的通讯解析和查找 network 主要是集群之间的node进行通讯提供功能，主要是为每个节点分配一个网段的地址，每个pod调度后就可以获取到一个IP地址，通过ip地址进行通讯 总结 本片文章主要把一些基本的概念进行了一些简单的讲述，接下来的几篇文章会对几个流程进行讲解，主要包含如下几个： 1-master节点和node节点之间的通讯 2-调度器的工作机制 3-控制器的工作机制 4-kubelet运行机制 5-一个pod的完整运行流程总结">
+<meta property='og:url' content='http://localhost:1313/%E4%BA%91%E5%8E%9F%E7%94%9F%E6%8A%80%E6%9C%AF/kubernetes-base-3/'>
+<meta property='og:site_name' content='千兆光年'>
+<meta property='og:type' content='article'><meta property='article:section' content='云原生技术' /><meta property='article:published_time' content='2020-04-12T15:04:12&#43;08:00'/><meta property='article:modified_time' content='2020-04-12T15:04:12&#43;08:00'/>
+<meta name="twitter:title" content="Kubernetes基础架构(3)">
+<meta name="twitter:description" content="前言 学习了一些基本的概念，我们开始一层层拆解K8S。学习任何一个主流的技术之前，一般都是从他的架构开始学习，这样可以比较全面的把握它的工作流程。 本片文章介绍如下内容： 1-什么是集群控制平面和节点 2-etcd的基础介绍 3-附件和插件机制 集群控制平面 集群控制平面，又叫做AKA master，也就是我们通常所说的master节点，通常是用于控制整个集群的运行状态。他可以单节点运行，也可以高可用运行，也可以托管于自身的集群上运行。支持REST API去CRUD集群资源。控制平面提供了集群唯一的入口，集群内的全部资源的操作，都要通过master节点来进行，提供了安全性的保证，可提供了便捷的操作。master节点主要包含如下的组件： 名称 主要功能 API server k8s api服务，主要提供REST操作，验证资源和更新资源和etcd交互 Contorller Manager 其他集群功能的控制使用一个单独的进程来管理，就是控制管理器，控制某种资源的预期状态 Scheculer 监控未调度的pod去绑定他们到主机，通过/binding的pod子api etcd 集群状态存储，api server所有的更新数据都要存储在etcd内部，同时etcd提供了watch的支持，就是当数据发生变化的时候回返回当前的数据，未发生变化时，阻塞watch的进程。 以上的组建主要是master节点所要依赖的组建，其中存储组建可以单独作为一个种类介绍 节点 这里的节点就是前文中的node，主要是k8s中的工作节点，主要负责运行pod。主要包含如下的组建： 名称 主要功能 kubelet 主要负责运行调度到该节点上的pod，并且负责上报当前节点上的全部pod的运行状态 containner runtime 容器运行时，主要是把容器跑起来，拉取镜像。kubelet和容器运行时通过容器运行时接口来交互，接口目前支持：rkt，docker，cri-o，frakti kube-proxy kubeproxy创建规则于iptables上，用于提供负载均衡和高可用解决方案，将流量转发到后端的pod上 add-ons &amp; plugins 附件，主要为集群提供扩展功能，目前主流的附件包含如下几个： 名称 作用 DNS 提供解析功能和服务发现功能，用于集群内部的pod之间的通讯解析和查找 network 主要是集群之间的node进行通讯提供功能，主要是为每个节点分配一个网段的地址，每个pod调度后就可以获取到一个IP地址，通过ip地址进行通讯 总结 本片文章主要把一些基本的概念进行了一些简单的讲述，接下来的几篇文章会对几个流程进行讲解，主要包含如下几个： 1-master节点和node节点之间的通讯 2-调度器的工作机制 3-控制器的工作机制 4-kubelet运行机制 5-一个pod的完整运行流程总结">
+  
+
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column compact"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_huda2458f72ce188392d75c5d51cd8e24e_373_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">千兆光年</a></h1>
+            <h2 class="site-description"></h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E5%AE%B9%E5%99%A8/" >
+                容器
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/%E4%BA%91%E5%8E%9F%E7%94%9F%E6%8A%80%E6%9C%AF/kubernetes-base-3/">Kubernetes基础架构(3)</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 12, 2020</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="前言">前言
+</h1><p>学习了一些基本的概念，我们开始一层层拆解K8S。学习任何一个主流的技术之前，一般都是从他的架构开始学习，这样可以比较全面的把握它的工作流程。</p>
+<p>本片文章介绍如下内容：</p>
+<p>1-什么是集群控制平面和节点</p>
+<p>2-etcd的基础介绍</p>
+<p>3-附件和插件机制</p>
+<h1 id="集群控制平面">集群控制平面
+</h1><p>集群控制平面，又叫做AKA master，也就是我们通常所说的master节点，通常是用于控制整个集群的运行状态。他可以单节点运行，也可以高可用运行，也可以托管于自身的集群上运行。支持REST API去CRUD集群资源。控制平面提供了集群唯一的入口，集群内的全部资源的操作，都要通过master节点来进行，提供了安全性的保证，可提供了便捷的操作。master节点主要包含如下的组件：</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>主要功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API server</td>
+<td>k8s api服务，主要提供REST操作，验证资源和更新资源和etcd交互</td>
+</tr>
+<tr>
+<td>Contorller Manager</td>
+<td>其他集群功能的控制使用一个单独的进程来管理，就是控制管理器，控制某种资源的预期状态</td>
+</tr>
+<tr>
+<td>Scheculer</td>
+<td>监控未调度的pod去绑定他们到主机，通过/binding的pod子api</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="etcd">etcd
+</h3><p>集群状态存储，api server所有的更新数据都要存储在etcd内部，同时etcd提供了watch的支持，就是当数据发生变化的时候回返回当前的数据，未发生变化时，阻塞watch的进程。</p>
+<p>以上的组建主要是master节点所要依赖的组建，其中存储组建可以单独作为一个种类介绍</p>
+<h1 id="节点">节点
+</h1><p>这里的节点就是前文中的node，主要是k8s中的工作节点，主要负责运行pod。主要包含如下的组建：</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>主要功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>kubelet</td>
+<td>主要负责运行调度到该节点上的pod，并且负责上报当前节点上的全部pod的运行状态</td>
+</tr>
+<tr>
+<td>containner runtime</td>
+<td>容器运行时，主要是把容器跑起来，拉取镜像。kubelet和容器运行时通过容器运行时接口来交互，接口目前支持：rkt，docker，cri-o，frakti</td>
+</tr>
+<tr>
+<td>kube-proxy</td>
+<td>kubeproxy创建规则于iptables上，用于提供负载均衡和高可用解决方案，将流量转发到后端的pod上</td>
+</tr>
+</tbody>
+</table></div>
+<h1 id="add-ons--plugins">add-ons &amp; plugins
+</h1><p>附件，主要为集群提供扩展功能，目前主流的附件包含如下几个：</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DNS</td>
+<td>提供解析功能和服务发现功能，用于集群内部的pod之间的通讯解析和查找</td>
+</tr>
+<tr>
+<td>network</td>
+<td>主要是集群之间的node进行通讯提供功能，主要是为每个节点分配一个网段的地址，每个pod调度后就可以获取到一个IP地址，通过ip地址进行通讯</td>
+</tr>
+</tbody>
+</table></div>
+<h1 id="总结">总结
+</h1><p>本片文章主要把一些基本的概念进行了一些简单的讲述，接下来的几篇文章会对几个流程进行讲解，主要包含如下几个：</p>
+<p>1-master节点和node节点之间的通讯</p>
+<p>2-调度器的工作机制</p>
+<p>3-控制器的工作机制</p>
+<p>4-kubelet运行机制</p>
+<p>5-一个pod的完整运行流程总结</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2024 千兆光年
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.26.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

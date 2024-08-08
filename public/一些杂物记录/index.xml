@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>一些杂物记录s on 千兆光年</title>
+        <link>http://localhost:1313/%E4%B8%80%E4%BA%9B%E6%9D%82%E7%89%A9%E8%AE%B0%E5%BD%95/</link>
+        <description>Recent content in 一些杂物记录s on 千兆光年</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Mon, 31 May 2021 16:07:09 +0800</lastBuildDate><atom:link href="http://localhost:1313/%E4%B8%80%E4%BA%9B%E6%9D%82%E7%89%A9%E8%AE%B0%E5%BD%95/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>常用命令</title>
+        <link>http://localhost:1313/%E4%B8%80%E4%BA%9B%E6%9D%82%E7%89%A9%E8%AE%B0%E5%BD%95/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</link>
+        <pubDate>Mon, 31 May 2021 16:07:09 +0800</pubDate>
+        
+        <guid>http://localhost:1313/%E4%B8%80%E4%BA%9B%E6%9D%82%E7%89%A9%E8%AE%B0%E5%BD%95/%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</guid>
+        <description>&lt;h3 id=&#34;磁盘清理&#34;&gt;磁盘清理
+&lt;/h3&gt;&lt;p&gt;for i in &lt;code&gt;find /home/work/logs/neo-logs -type f -size +100M&lt;/code&gt; ;do echo $i; &amp;gt; $i;done&lt;/p&gt;
+&lt;p&gt;supervisorctl restart logcollect #不是必须&lt;/p&gt;
+&lt;p&gt;for i in &lt;code&gt;docker image ls |grep &amp;quot;months ago&amp;quot; |awk &#39;{print $3}&#39;&lt;/code&gt;; do docker image rm $i;done  #镜像清理&lt;/p&gt;
+&lt;h3 id=&#34;根据pid获取服务树&#34;&gt;根据pid获取服务树
+&lt;/h3&gt;&lt;p&gt;/usr/local/bin/hids.sh procinfo 15021&lt;/p&gt;
+&lt;h3 id=&#34;常用机器&#34;&gt;常用机器
+&lt;/h3&gt;&lt;p&gt;c4-b2c-b2cop-console02.bj 自己用跳板机&lt;/p&gt;
+&lt;p&gt;c3-b2c-b2cop-download02 文件下载服务器&lt;/p&gt;
+&lt;h3 id=&#34;根据pid查找容器&#34;&gt;根据pid查找容器
+&lt;/h3&gt;&lt;p&gt;/usr/local/bin/hids.sh procinfo&lt;/p&gt;
+&lt;h3 id=&#34;删除cron文件夹&#34;&gt;删除cron文件夹
+&lt;/h3&gt;&lt;p&gt;cd /home/work/logs/neo-logs/ &amp;amp;&amp;amp; for i in &lt;code&gt;ls -l |grep cron |awk &#39;{print $9}&#39;&lt;/code&gt;;do echo $i ;rm -rf $i;done&lt;/p&gt;
+&lt;p&gt;cd /home/work/logs/neo-logs-bak/ &amp;amp;&amp;amp; for i in &lt;code&gt;ls -l |grep cron |awk &#39;{print $9}&#39;&lt;/code&gt;;do echo $i ;rm -rf $i;done&lt;/p&gt;
+&lt;h3 id=&#34;批量加key&#34;&gt;批量加key
+&lt;/h3&gt;&lt;p&gt;for i in &lt;code&gt;cat ip&lt;/code&gt;;do hd $i &amp;ldquo;ssh-keygen -t rsa -P &amp;rsquo;&amp;rsquo; -f ~/.ssh/id_rsa&amp;rdquo;;done&lt;/p&gt;
+&lt;p&gt;for i in &lt;code&gt;cat ip&lt;/code&gt;;do hd $i &amp;ldquo;echo &amp;lsquo;ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA0+2PQp7wSLPocujLffkp91gOSCM9xP7VTFwbviP/FFJZzpWCbMkppAAh3GH30UxLBrreXSWmepPw+R9ntWf0MIRQScKLxO1OPIVCEyyrpo36eMIF9zNJDt9XQZEL0TtNWDkKp/VTypA1OLtUNZSL8fP3g8a5VFq0nWnSCgyHKyYyXTI6Ed+y7Qt7OqhTpnaZwQ5bRbgC/ZdmzAmatMuzzcHueJ0H1h1g8BeYIXn+7Sti49y5sm2IYGGS4aigbz4UfRrg+CXZZ/24EZTefRFADB20SY3Gsjpom98kNy8tIzsESU4awgkCxfKM/+23Qen0sZvjWihECdchCGsQwNQsHw== root@console-78&amp;rsquo; &amp;raquo; ~/.ssh/authorized_keys&amp;rdquo;;done&lt;/p&gt;
+&lt;h3 id=&#34;查找容器对半网卡&#34;&gt;查找容器对半网卡
+&lt;/h3&gt;&lt;p&gt;进入容器执行&lt;/p&gt;
+&lt;p&gt;id=$(cat /sys/class/net/eth0/iflink) #这里获取了一个id号&lt;/p&gt;
+&lt;p&gt;宿主机执行&lt;/p&gt;
+&lt;p&gt;ip a |grep $id #这里可以找到&lt;/p&gt;
+&lt;h3 id=&#34;进入容器的网络空间抓包&#34;&gt;进入容器的网络空间抓包
+&lt;/h3&gt;&lt;p&gt;docker ps |grep demo-d49ozbhq |grep -v pause&lt;/p&gt;
+&lt;p&gt;docker inspect b8f |grep Pid&lt;/p&gt;
+&lt;p&gt;nsenter -t29656 -n&lt;/p&gt;
+&lt;p&gt;tcpdump&lt;/p&gt;
+&lt;h3 id=&#34;cni0网卡清理&#34;&gt;cni0网卡清理
+&lt;/h3&gt;&lt;p&gt;ifconfig cni0 down&lt;/p&gt;
+&lt;p&gt;ip link delete cni0&lt;/p&gt;
+&lt;h3 id=&#34;磁盘坏道检测&#34;&gt;磁盘坏道检测
+&lt;/h3&gt;&lt;p&gt;megacli -pdlist -a0|egrep &amp;ldquo;Slot Number|Firmware state|Media Error|Other Error|Predictive Failure Count&amp;rdquo;&lt;/p&gt;
+&lt;h3 id=&#34;c3-b2c-b2cop-chaos-node0xbjhttpc3-b2c-b2cop-chaos-node0xbj主机磁盘满&#34;&gt;&lt;a class=&#34;link&#34; href=&#34;http://c3-b2c-b2cop-chaos-node0x.bj&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;c3-b2c-b2cop-chaos-node0x.bj&lt;/a&gt;主机磁盘满
+&lt;/h3&gt;&lt;p&gt;find /home/work/data/hera/deploy -maxdepth 1 -ctime +30 -type d -exec rm -rf {} ;&lt;/p&gt;
+&lt;p&gt;supervisorctl restart filebeat&lt;/p&gt;
+&lt;h3 id=&#34;sock排序&#34;&gt;sock排序
+&lt;/h3&gt;&lt;p&gt;lsof |grep sock |awk &amp;lsquo;{print $2}&amp;rsquo; |sort -nr |uniq -c |sort -nr |less&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>统一资源管理中心</title>
+        <link>http://localhost:1313/%E4%B8%80%E4%BA%9B%E6%9D%82%E7%89%A9%E8%AE%B0%E5%BD%95/resource-manager/</link>
+        <pubDate>Tue, 22 Sep 2020 10:51:51 +0800</pubDate>
+        
+        <guid>http://localhost:1313/%E4%B8%80%E4%BA%9B%E6%9D%82%E7%89%A9%E8%AE%B0%E5%BD%95/resource-manager/</guid>
+        <description>&lt;h3 id=&#34;简介&#34;&gt;简介
+&lt;/h3&gt;&lt;p&gt;从事运维的同学基本都知道，要想从繁重的运维工作中解放出来，自动化是必然的路径。现在无论大小型的公司，运维自动化建设基本是都在进行的，只不过是有好坏的区别。对于建设运维自动化的关键，相信每一个运维同学都是了然于胸的。&lt;/p&gt;
+&lt;p&gt;自动化的第一步，配置标准化，可以说没有标准化，自动化无从谈起，我们开发的程序不可能兼容各种各样的非标准化配置。&lt;/p&gt;
+&lt;p&gt;自动化的另外一个关键的要点就是，建设一个统一的资源管理中心，将各种类型的资源统一纳管起来。&lt;/p&gt;
+&lt;h3 id=&#34;统一资源管理中心的建设&#34;&gt;统一资源管理中心的建设
+&lt;/h3&gt;&lt;p&gt;统一资源管理中心的建设可以说是基石，是非常重要的，有一个好用的资源管理中心是上层构建各种自动化工具的基础，都要依赖这个。&lt;/p&gt;
+&lt;h5 id=&#34;遇到的问题&#34;&gt;遇到的问题
+&lt;/h5&gt;&lt;p&gt;在建设的过程中，我们遇到了很多问题，其中最为关键的问题就是数据信息不准确的问题，如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;IP变更&lt;/li&gt;
+&lt;li&gt;磁盘变更&lt;/li&gt;
+&lt;li&gt;内存变更&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;机器离线是主动离线还是被动离线？等等问题&lt;/p&gt;
+&lt;h5 id=&#34;需要纳管什么资源&#34;&gt;需要纳管什么资源？
+&lt;/h5&gt;&lt;p&gt;内存，磁盘，IP，端口，域名，服务&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Nginx 参数调优</title>
+        <link>http://localhost:1313/%E4%B8%80%E4%BA%9B%E6%9D%82%E7%89%A9%E8%AE%B0%E5%BD%95/nginx_agument/</link>
+        <pubDate>Sun, 26 Apr 2020 18:19:27 +0800</pubDate>
+        
+        <guid>http://localhost:1313/%E4%B8%80%E4%BA%9B%E6%9D%82%E7%89%A9%E8%AE%B0%E5%BD%95/nginx_agument/</guid>
+        <description>&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;内核参数&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;值&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;解释&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;/proc/sys/net/ipv4/tcp_max_syn_backlog&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;2048&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;调整半连接队列的大小&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;/proc/sys/net/core/somaxconn&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;2048&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;tcp最大连接数&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;连接取决于这两个值的最小值&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;net.ipv4.ip_forward&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;1&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;打开转发&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;/proc/sys/net/ipv4/tcp_tw_recycle&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;0&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;time wait快速回收，千万不要打开，1是打开，会出现connect timeout的问题 对客户端和服务器同时起作用，开启后在 3.5*RTO 内回收，负载会把 timestamp 都给清空&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;/proc/sys/net/ipv4/tcp_tw_reuse&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;0&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;复用timewaite连接，打开的意义不大，因为这个状态出现在客户端&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;nginx参数&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;值&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;解释&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;worker_processes&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;8&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;工作进程数量,和cpu数量相等就行&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;use epoll;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;使用epoll&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;worker_connections&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;10240&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;单个工作进程允许建立的最多连接数&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;server_names_hash_bucket_size&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;512&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;server name 的hash表大小&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;server_names_hash_max_size&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;1024&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;最大的大小&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;underscores_in_headers&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;on&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;开启使用自定义http头部的选项，支持特定的业务&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;sendfile&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;on&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;使用sendfile 好处：两个描述符之间直接传输数据，完全在内核操作，不需要先 read 再 write，没有上下文切换开销&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;tcp_nopush&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;on&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;启用了sendfile才生效，启用后数据包增加到一定大小才会发送，提升网络效率&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;tcp_nodelay&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;on&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;禁用 Nagle 算法， 加快发送数据，keepalived连接才会启用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;/&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;/&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;上面两个的参数同时开启，最终的效果是先填满包，再尽快发送。&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;keepalive_timeout&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;600s&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;长链接超时时间&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;keepalive_requests&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;409600&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;一个长链接可以处理的客户端的请求数量最大值&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;client_header_buffer_size&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;512k&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;请求头缓存大小，若请求头大，应该设置，减少内存分配的次数&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;client_max_body_size&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;2000M&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;请求头body的大小，默认1M。不设置上传文件会发生413&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;client_body_buffer_size&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;100M&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;body缓冲区大小，若超过写入文件&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;large_client_header_buffers&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;4 1024k&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;当超过 上面的buffersize 使用这个，最大使用四个大小&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;proxy_buffer_size&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;8192k&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;代理缓存的大小，nginx-后端服务的缓存大小&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;proxy_buffers&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;32 8192k&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;到后端服务的缓存超过后最多可以申请多少缓存块&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;proxy_headers_hash_bucket_size&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;6400&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;代理的后端服务的hash表大小，一次分配的大小&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;proxy_headers_hash_max_size&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;51200&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;代理的后端服务hash表最大可以多少&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;proxy_connect_timeout   proxy_read_timeout   proxy_send_timeout&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;60&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;这三个值和后端服务同时的超时时长，设置成一样就可以&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
