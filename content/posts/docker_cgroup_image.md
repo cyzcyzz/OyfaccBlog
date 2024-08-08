@@ -1,11 +1,11 @@
 ---
-date: 2024-08-08
-tags: 
+date: 2024-08-08T18:29:18+08:00
+tags:
+  - docker
+  - 容器
 title: docker镜像和资源隔离
-slug: 17:21
 share: true
-keywords:
-  - 关键字1 - 关键字2
+keywords: 
 description: ""
 lang: cn
 cover:
