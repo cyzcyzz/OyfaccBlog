@@ -1,15 +1,12 @@
 ---
-date: 2024-08-08
+date: 2024-08-08T16:29:18+08:00
 tags:
   - docker
+  - 容器
 title: docker简介和安装
-slug: 17:00
 share: true
-canonicalURL: ""
 keywords: 
 description: ""
-series: 
-lastmod: 
 lang: cn
 cover:
   image: ""
