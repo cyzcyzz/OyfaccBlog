@@ -11,7 +11,9 @@ lang: cn
 cover:
   image: ""
 author: 程元召
-dir: posts
+dir: post
+categories:
+  - 云原生
 ---
 ## 概述
 对于整个docker容器技术的体系来说，主要划分为三部分：镜像，容器和仓库
