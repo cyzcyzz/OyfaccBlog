@@ -18,20 +18,10 @@ menu:
 comments: false
 ---
 
-To use this feature, add `links` section to frontmatter.
-
-This page's frontmatter:
+## 我自己的博客信息
 
 ```yaml
-links:
-  - title: GitHub
-    description: GitHub is the world's largest software development platform.
-    website: https://github.com
-    image: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-  - title: TypeScript
-    description: TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.
-    website: https://www.typescriptlang.org
-    image: ts-logo-128.jpg
+🍔名字： 千兆光年's Blog
+🍟博客地址：https://blog.oyfacc.cn
+🥗简介：CC要努力.🎈
 ```
-
-`image` field accepts both local and external images.
