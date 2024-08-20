@@ -2,7 +2,7 @@
 title: 关于我
 menu:
     main: 
-        weight: -90
+        weight: -70
         params:
             icon: user
 ---
