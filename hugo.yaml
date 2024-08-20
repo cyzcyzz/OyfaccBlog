@@ -2,7 +2,7 @@ baseurl: https://blog.oyfacc.cn/
 languageCode: zh-cn
 theme: hugo-theme-stack
 paginate: 7
-title: 千兆光年's Blog
+title: 千兆光年
 copyright: OyFaCC
 
 # Theme i18n support
@@ -16,7 +16,7 @@ hasCJKLanguage: true
 languages:
     zh-cn:
         languageName: 中文
-        title: 千兆光年's Blog
+        title: 千兆光年
         weight: 1
         params:
             description: 程元召要努力💪!
@@ -50,7 +50,7 @@ params:
 
     sidebar:
         compact: false
-        emoji: 🏀
+        emoji: ''
         subtitle: 程元召要努力💪!
         avatar:
             enabled: true
